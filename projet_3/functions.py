@@ -9,15 +9,26 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
 
 
-def showScatterPlot(data, x, y):
+def showScatterPlot(data, x, y, ax=None):
     x_values = data[x].values
     y_values = data[y].values
     slope, intercept = np.polyfit(x_values, y_values, 1)
-    plt.scatter(x_values, y_values)
-    plt.plot(x_values, slope * x_values + intercept, color='red')
-    plt.xlabel(x)
-    plt.ylabel(y)
-    plt.show()
+    if ax is None:
+        fig, ax = plt.subplots()
+    ax.scatter(x_values, y_values)
+    ax.plot(x_values, slope * x_values + intercept, color='red')
+    ax.set_xlabel(x)
+    ax.set_ylabel(y)
+
+
+def showHistogram(data, column, bins=50, ax=None):
+    column_values = data[column].values
+    if ax is None:
+        fig, ax = plt.subplots()
+    ax.hist(column_values, bins=bins, color='steelblue', density=True, edgecolor='none')
+    ax.set_xlabel(column),
+    ax.set_ylabel('Frequency')
+    ax.set_title(column, fontsize=14)
 
 
 def dummy_regressor_model(data, x, y):
@@ -38,7 +49,7 @@ def linear_regression(X_train, X_test, y_train, y_test):
     model = LinearRegression()
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred, squared=False)
     return mse
 
 
@@ -50,9 +61,8 @@ def get_grid(model, X_train, y_train, param_grid):
     return grid_search, df
 
 
-def evaluate_model(model,X_train, X_test, y_train, y_test):
+def evaluate_model(model, X_train, X_test, y_train, y_test):
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
-    mse = mean_squared_error(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred, squared=False)
     return model, mse
-
