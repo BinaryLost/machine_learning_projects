@@ -1,11 +1,7 @@
 import matplotlib.pyplot as plt
-from sklearn.dummy import DummyRegressor
-from sklearn.tree import DecisionTreeRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
 import numpy as np
-import pandas as pd
-from sklearn.model_selection import GridSearchCV
 from sklearn.linear_model import LinearRegression
 
 
@@ -31,15 +27,6 @@ def showHistogram(data, column, bins=50, ax=None):
     ax.set_title(column, fontsize=14)
 
 
-def dummy_regressor_model(data, x, y):
-    X = data[x]
-    Y = data[y]
-    model = DummyRegressor(strategy='mean')
-    model.fit(X, Y)
-    mean_pred = model.predict(X)
-    print("Prédiction moyenne : ", mean_pred)
-
-
 def train_test_split_data(data, x, y):
     X_train, X_test, y_train, y_test = train_test_split(data[x], data[y], test_size=0.2, random_state=42)
     return X_train, X_test, y_train, y_test
@@ -51,14 +38,6 @@ def linear_regression(X_train, X_test, y_train, y_test):
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred, squared=False)
     return mse
-
-
-def get_grid(model, X_train, y_train, param_grid):
-    grid_search = GridSearchCV(model, param_grid, cv=5, scoring='neg_mean_squared_error')
-    grid_search.fit(X_train, y_train)
-    results = grid_search.cv_results_
-    df = pd.DataFrame(results)
-    return grid_search, df
 
 
 def evaluate_model(model, X_train, X_test, y_train, y_test):
